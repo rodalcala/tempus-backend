@@ -25,6 +25,7 @@ const boxSchema = new mongoose.Schema({
   lat: Number,
   lng: Number,
   comments: String,
+  simType: String,
 });
 
 const Box = mongoose.model('boxes', boxSchema);

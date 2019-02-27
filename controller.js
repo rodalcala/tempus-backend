@@ -11,7 +11,7 @@ exports.getAllBoxes = async (ctx) => {
 
 exports.changeStatus = async (ctx) => {
   const {
-    dataLeft = 0, minsLeft = 0, expiration = '', comments = '',
+    dataLeft = 0, minsLeft = 0, expiration = '', comments = '', simType,
   } = ctx.request.body;
   try {
     const box = await Box.findById(ctx.params.id);
@@ -23,6 +23,7 @@ exports.changeStatus = async (ctx) => {
       dataLeft,
       minsLeft,
       expiration,
+      simType,
       comments,
       $inc: { timesUpdated: 1 },
     });
