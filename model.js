@@ -6,7 +6,7 @@ const boxSchema = new mongoose.Schema({
   name: String,
   full: Boolean,
   updated: {
-    type: Number,
+    type: String,
     default: new Date().toISOString(),
   },
   timesUpdated: {
@@ -24,6 +24,7 @@ const boxSchema = new mongoose.Schema({
   expiration: String,
   lat: Number,
   lng: Number,
+  comments: String,
 });
 
 const Box = mongoose.model('boxes', boxSchema);
