@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-// Could be a good idea to change the user that performs the updates and querys to the database
-
 const boxSchema = new mongoose.Schema({
   name: String,
   full: Boolean,
@@ -30,4 +28,16 @@ const boxSchema = new mongoose.Schema({
 
 const Box = mongoose.model('boxes', boxSchema);
 
-module.exports = Box;
+const userSchema = new mongoose.Schema({
+  firstName: String,
+  lastName: String,
+  password: String,
+  country: String,
+});
+
+const User = mongoose.model('users', userSchema);
+
+module.exports = {
+  Box,
+  User,
+};

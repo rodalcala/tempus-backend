@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/rodalcala/tempus-backend#readme",
   "dependencies": {
+    "bcrypt": "^3.0.4",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-cors": "0.0.16",
