@@ -11,7 +11,8 @@ exports.getAllBoxes = async (ctx) => {
 
 exports.getBox = async (ctx) => {
   try {
-    ctx.body = await Box.find({ _id: ctx.params.id });
+    const box = await Box.find({ _id: ctx.params.id });
+    [ctx.body] = box;
   } catch (err) {
     console.log(err); // eslint-disable-line
     ctx.status = 500;
