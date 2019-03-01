@@ -1,12 +1,13 @@
 const Router = require('koa-router');
-const ctrl = require('./controller');
+const boxesCtrl = require('./boxes.controller.js');
+const usersCtrl = require('./users.controller.js');
 
 const router = new Router();
 
-router.get('/boxes', ctrl.getAllBoxes);
-router.get('/box/:id', ctrl.getBox);
-router.put('/box/:id', ctrl.changeStatus);
-// Missing the endpoints for users
-router.post('/sign-up', ctrl.signUpUser);
+router.get('/boxes', boxesCtrl.getAllBoxes);
+router.get('/box/:id', boxesCtrl.getBox);
+router.put('/box/:id', boxesCtrl.changeStatus);
+router.post('/sign-up', usersCtrl.signUp);
+router.get('/sign-in', usersCtrl.signIn);
 
 module.exports = router;

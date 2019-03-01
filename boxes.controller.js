@@ -1,4 +1,4 @@
-const Box = require('./model');
+const { Box } = require('./model');
 
 exports.getAllBoxes = async (ctx) => {
   try {

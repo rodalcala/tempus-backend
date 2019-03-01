@@ -31,6 +31,7 @@ const Box = mongoose.model('boxes', boxSchema);
 const userSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
+  email: String,
   password: String,
   country: String,
 });

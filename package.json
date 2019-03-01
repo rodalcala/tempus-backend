@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/rodalcala/tempus-backend#readme",
   "dependencies": {
+    "atob": "^2.1.2",
     "bcrypt": "^3.0.4",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",

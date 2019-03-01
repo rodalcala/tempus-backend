@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
-const User = require('./model');
+const atob = require('atob');
+const { User } = require('./model');
 
 exports.signUp = async (ctx) => {
   const {
@@ -37,15 +38,16 @@ exports.signUp = async (ctx) => {
   ctx.status = 201;
 };
 
-// exports.signIn = async (ctx, next) => {
-//   const basic = ctx.headers.authorization.split(' ');
-//   if (basic.length < 2 && basic[0]!=='Basic') {
-//     throw new Error('Missing basic authentication header');
-//   }
-//   const [username, password] = btoa(basic[1]).split(':');
-//   const user = await User.findOne({username});
-//   const match = await bcrypt.compare(password, user.password);
-//   if (match) {
-//   }
-//   await next();
-// };
+exports.signIn = async (ctx, next) => {
+  const basic = ctx.headers.authorization.split(' ');
+  if (basic.length < 2 && basic[0] !== 'Basic') {
+    throw new Error('Missing basic authentication header');
+  }
+  const [email, password] = atob(basic[1]).split(':');
+  const user = await User.findOne({ email });
+  const match = await bcrypt.compare(password, user.password);
+  if (match) {
+    ctx.body = user;
+  }
+  await next();
+};
