@@ -1,8 +1,9 @@
 const bcrypt = require('bcrypt');
 const atob = require('atob');
 const jwt = require('jsonwebtoken');
+const { promisify } = require('util');
 const { User } = require('./model');
-const secretKey = require('./google.maps.api');
+const { secretKey } = require('./google.maps.api');
 
 exports.signUp = async (ctx) => {
   const {
@@ -12,9 +13,7 @@ exports.signUp = async (ctx) => {
     country,
   } = ctx.request.body;
   let { password } = ctx.request.body;
-
   const existingUser = await User.findOne({ email });
-
   if (existingUser) {
     ctx.status = 400;
     ctx.body = {
@@ -48,13 +47,33 @@ exports.signIn = async (ctx, next) => {
   const [email, password] = atob(basic[1]).split(':');
   const user = await User.findOne({ email });
   const match = await bcrypt.compare(password, user.password);
-  if (match) {
-    ctx.body = user;
+  if (!match) {
+    ctx.body = 'Invalid email or password';
+    return;
   }
-
-  jwt.sign({ user }, secretKey, { algorithm: 'RS256' }, (err, token) => {
-    console.log(token);
-  });
+  /*
+  Como no podemos hacer
+  await jwt.sign(async)
+  porque no devuelve una promise, necesitamos "promisify" it.
+  La forma manual seria esta:
+  function jwtSignAsync(payload, secretOrPrivateKey) {
+    return new Promise((resolve, reject) => {
+      jwt.sign(payload, secretOrPrivateKey, (err, token) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(token);
+        }
+      });
+    });
+  }
+  O podemos valernos de promisify (from node utils) ya que
+  la estructura de jwt.sign(async) es la estandar de node.
+  callback como ultimo parametro, y dentro del cb, el error
+  como primer parametro y el payload segundo
+  */
+  const jwtSignAsync = promisify(jwt.sign);
+  ctx.body = await jwtSignAsync({ user }, secretKey);
 
   await next();
 };
