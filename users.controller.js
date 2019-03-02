@@ -21,6 +21,7 @@ exports.signUp = async (ctx) => {
         'Username already exists.',
       ],
     };
+    return;
   }
 
   try {
