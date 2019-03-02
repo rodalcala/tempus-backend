@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const atob = require('atob');
+const jwt = require('jsonwebtoken');
 const { User } = require('./model');
+const secretKey = require('./google.maps.api');
 
 exports.signUp = async (ctx) => {
   const {
@@ -49,5 +51,10 @@ exports.signIn = async (ctx, next) => {
   if (match) {
     ctx.body = user;
   }
+
+  jwt.sign({ user }, secretKey, { algorithm: 'RS256' }, (err, token) => {
+    console.log(token);
+  });
+
   await next();
 };
