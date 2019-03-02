@@ -18,7 +18,7 @@ exports.signUp = async (ctx) => {
     ctx.status = 400;
     ctx.body = {
       errors: [
-        'Username already exists.',
+        'email address already in use.',
       ],
     };
     return;
