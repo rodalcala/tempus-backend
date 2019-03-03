@@ -52,12 +52,12 @@ exports.signIn = async (ctx, next) => {
     const [email, password] = atob(basic[1]).split(':');
     const user = await User.findOne({ email });
     if (!user) {
-      ctx.body = 'Invalid email or password';
+      ctx.body = JSON.stringify('Invalid email or password');
       return;
     }
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
-      ctx.body = 'Invalid email or password';
+      ctx.body = JSON.stringify('Invalid email or password');
       return;
     }
     /*
