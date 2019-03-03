@@ -11,7 +11,9 @@ const verifyToken = async (ctx, next) => {
     ctx.token = bearerToken;
     await next();
   } else {
-    throw new Error('You\'re not sign in');
+    ctx.status = 403;
+    ctx.body = 'You\'re not sign in';
+    // throw new Error('You\'re not sign in');
   }
 };
 
