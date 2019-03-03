@@ -12,15 +12,20 @@ const verifyToken = async (ctx, next) => {
     const bearerToken = bearer[1];
     await jwt.verify(bearerToken, secretKey, async (err, authData) => {
       if (err) {
-        ctx.status = 403;
-        ctx.body = JSON.stringify('You\'re session expired');
+        if (bearerToken === 'null') {
+          ctx.status = 403;
+          ctx.body = JSON.stringify('You\'re not signed in');
+        } else {
+          ctx.status = 403;
+          ctx.body = JSON.stringify('Your session expired');
+        }
       } else if (authData) {
         await next();
       }
     });
   } else {
-    ctx.status = 403;
-    ctx.body = JSON.stringify('You\'re not signed in');
+    console.log('No authorization header'); // eslint-disable-line
+    ctx.status = 400;
   }
 };
 

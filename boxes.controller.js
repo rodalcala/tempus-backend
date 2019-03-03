@@ -1,7 +1,4 @@
-const jwt = require('jsonwebtoken');
-// const { promisify } = require('util');
 const { Box } = require('./model');
-const { secretKey } = require('./google.maps.api');
 
 exports.getAllBoxes = async (ctx) => {
   try {
