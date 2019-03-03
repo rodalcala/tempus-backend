@@ -8,7 +8,7 @@ const router = new Router();
 router.get('/boxes', verifyToken, boxesCtrl.getAllBoxes);
 router.get('/box/:id', verifyToken, boxesCtrl.getBox);
 router.put('/box/:id', verifyToken, boxesCtrl.changeStatus);
-router.post('/sign-up', usersCtrl.signUp);
+router.post('/sign-up', usersCtrl.signUp, usersCtrl.signIn, usersCtrl.signIn);
 router.get('/sign-in', usersCtrl.signIn);
 
 

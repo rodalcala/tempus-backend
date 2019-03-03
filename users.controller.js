@@ -1,11 +1,12 @@
 const bcrypt = require('bcrypt');
 const atob = require('atob');
+const btoa = require('btoa');
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const { User } = require('./model');
 const { secretKey } = require('./google.maps.api');
 
-exports.signUp = async (ctx) => {
+exports.signUp = async (ctx, next) => {
   const {
     firstName,
     lastName,
@@ -30,55 +31,75 @@ exports.signUp = async (ctx) => {
     throw new Error('Password missing');
   }
 
-  ctx.body = await User.create({
+  await User.create({
     firstName,
     lastName,
     email,
     password,
     country,
   });
-  ctx.status = 201;
+
+  await next();
 };
 
 exports.signIn = async (ctx, next) => {
-  const basic = ctx.headers.authorization.split(' ');
-  if (basic.length < 2 && basic[0] !== 'Basic') {
-    throw new Error('Missing basic authentication header');
-  }
-  const [email, password] = atob(basic[1]).split(':');
-  const user = await User.findOne({ email });
-  if (!user) {
-    ctx.body = 'Invalid email or password';
-    return;
-  }
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) {
-    ctx.body = 'Invalid email or password';
-    return;
-  }
-  /*
-  Como no podemos hacer
-  await jwt.sign(async)
-  porque no devuelve una promise, necesitamos "promisify" it.
-  La forma manual seria esta:
-  function jwtSignAsync(payload, secretOrPrivateKey) {
-    return new Promise((resolve, reject) => {
-      jwt.sign(payload, secretOrPrivateKey, (err, token) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(token);
-        }
+  console.log('singIn', ctx);
+  if (ctx.headers.authorization) {
+    const basic = ctx.headers.authorization.split(' ');
+    if (basic.length < 2 && basic[0] !== 'Basic') {
+      throw new Error('Missing basic authentication header');
+    }
+    const [email, password] = atob(basic[1]).split(':');
+    const user = await User.findOne({ email });
+    if (!user) {
+      ctx.body = 'Invalid email or password';
+      return;
+    }
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      ctx.body = 'Invalid email or password';
+      return;
+    }
+    /*
+    Como no podemos hacer
+    await jwt.sign(async)
+    porque no devuelve una promise, necesitamos "promisify" it.
+    La forma manual seria esta:
+    function jwtSignAsync(payload, secretOrPrivateKey) {
+      return new Promise((resolve, reject) => {
+        jwt.sign(payload, secretOrPrivateKey, (err, token) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(token);
+          }
+        });
       });
-    });
+    }
+    O podemos valernos de promisify (from node utils) ya que
+    la estructura de jwt.sign(async) es la estandar de node.
+    callback como ultimo parametro, y dentro del cb, el error
+    como primer parametro y el payload segundo
+    */
+    const jwtSignAsync = promisify(jwt.sign);
+    ctx.body = {
+      token: await jwtSignAsync({ user }, secretKey),
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      country: user.country,
+    };
+    console.log('finishing', ctx.body.token);
+    ctx.stutus = 200;
+  } else {
+    const { email, password } = ctx.request.body;
+    const base64 = btoa(`${email}:${password}`);
+    ctx.headers.authorization = `Basic ${base64}`;
+    // this.signIn(ctx);
+    // It seems like it doesn't work with recursion, ended up
+    // setting the header and calling the controller again
+    // from the router.
   }
-  O podemos valernos de promisify (from node utils) ya que
-  la estructura de jwt.sign(async) es la estandar de node.
-  callback como ultimo parametro, y dentro del cb, el error
-  como primer parametro y el payload segundo
-  */
-  const jwtSignAsync = promisify(jwt.sign);
-  ctx.body = await jwtSignAsync({ user }, secretKey);
 
   await next();
 };
