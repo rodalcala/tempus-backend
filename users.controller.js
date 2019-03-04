@@ -43,7 +43,6 @@ exports.signUp = async (ctx, next) => {
 };
 
 exports.signIn = async (ctx, next) => {
-  console.log('singIn', ctx);
   if (ctx.headers.authorization) {
     const basic = ctx.headers.authorization.split(' ');
     if (basic.length < 2 && basic[0] !== 'Basic') {
@@ -89,7 +88,6 @@ exports.signIn = async (ctx, next) => {
       lastName: user.lastName,
       country: user.country,
     };
-    console.log('finishing', ctx.body.token);
     ctx.stutus = 200;
   } else {
     const { email, password } = ctx.request.body;
