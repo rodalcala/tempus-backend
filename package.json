@@ -17,14 +17,14 @@
   },
   "homepage": "https://github.com/rodalcala/tempus-backend#readme",
   "dependencies": {
+    "@koa/cors": "^3.0.0",
     "atob": "^2.1.2",
-    "bcrypt": "^3.0.4",
     "btoa": "^1.2.1",
+    "bcrypt": "^3.0.4",
     "dotenv": "^7.0.0",
     "jsonwebtoken": "^8.5.0",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
-    "koa-cors": "0.0.16",
     "koa-router": "^7.4.0",
     "mongoose": "^5.4.16"
   },
