@@ -4,7 +4,6 @@ const btoa = require('btoa');
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const { User } = require('./model');
-const { secretKey } = require('./google.maps.api');
 
 exports.signUp = async (ctx, next) => {
   const {
@@ -26,7 +25,7 @@ exports.signUp = async (ctx, next) => {
   }
 
   try {
-    password = await bcrypt.hash(password, 10);
+    password = await bcrypt.hash(password, process.env.SALT);
   } catch (e) {
     throw new Error('Password missing');
   }
@@ -59,6 +58,7 @@ exports.signIn = async (ctx, next) => {
       ctx.body = JSON.stringify('Invalid email or password');
       return;
     }
+
     /*
     Como no podemos hacer
     await jwt.sign(async)
@@ -80,9 +80,10 @@ exports.signIn = async (ctx, next) => {
     callback como ultimo parametro, y dentro del cb, el error
     como primer parametro y el payload segundo
     */
+
     const jwtSignAsync = promisify(jwt.sign);
     ctx.body = {
-      token: await jwtSignAsync({ user }, secretKey),
+      token: await jwtSignAsync({ user }, process.env.JWT_SECRET),
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
