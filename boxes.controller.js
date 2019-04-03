@@ -20,7 +20,11 @@ exports.getBox = async (ctx) => {
 
 exports.changeStatus = async (ctx) => {
   const {
-    dataLeft = 0, minsLeft = 0, expiration = '', comments = '', simType,
+    dataLeft = 0,
+    minsLeft = 0,
+    expiration = '',
+    comments = '',
+    simType,
   } = ctx.request.body;
   try {
     const box = await Box.findById(ctx.params.id);
