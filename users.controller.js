@@ -92,6 +92,4 @@ exports.signIn = async (ctx, next) => {
     token: await jwtSignAsync({ _id, firstName, lastName, email, country }, process.env.JWT_SECRET)
   };
   ctx.stutus = 200;
-
-  await next();
 };
