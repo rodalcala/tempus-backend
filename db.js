@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 const db = mongoose.connection;
-const url = `mongodb://localhost:${process.env.MONGO_PORT}/${process.env.MONGO_DB}`;
+const url = `mongodb://mongodb:${process.env.MONGO_PORT}/${process.env.MONGO_INITDB_DATABASE}`;
 
 mongoose.connect(url, { useNewUrlParser: true });
 
