@@ -13,6 +13,9 @@ RUN npm install
 # Copy all other server files
 COPY . .
 
+# Install nodemon
+RUN npm install nodemon -g
+
 # Run the build
 CMD [ "npm", "start" ];
 
